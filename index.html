@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הרשמה לוובינר המקצועי</title>
-    <!-- חיבור לפונט גוגל איכותי ונקרא -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-color: #2563eb; /* כחול הייטק מוביל */
+            --primary-color: #2563eb;
             --primary-hover: #1d4ed8;
             --text-main: #1f2937;
             --text-muted: #4b5563;
+            --success-color: #16a34a;
             --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
         }
 
@@ -42,6 +42,8 @@
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             text-align: center;
+            position: relative;
+            transition: all 0.4s ease;
         }
 
         .logo-placeholder {
@@ -126,8 +128,10 @@
             background-color: var(--primary-hover);
         }
 
-        button:active {
-            transform: scale(0.98);
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .footer-text {
@@ -135,64 +139,120 @@
             font-size: 12px;
             color: #9ca3af;
         }
+
+        /* סגנון למסך ההצלחה */
+        .success-screen {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            background: #f0fdf4;
+            color: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- אייקון וידאו/וובינר מינימליסטי בחלק העליון -->
-    <div class="logo-placeholder">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-12-3v3m12-3v3M4.5 4.5h15a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 15.75v-9A2.25 2.25 0 014.5 4.5z" />
-        </svg>
-    </div>
-
-    <h1>הצטרפו לוובינר המקצועי</h1>
-    <p class="subtitle">הבטיחו את מקומכם עכשיו וקבלו גישה לכלים המובילים ולתכנים המתקדמים ביותר בתחום.</p>
-
-    <form id="webinarForm">
-        <div class="form-group">
-            <label for="name">שם מלא</label>
-            <input type="text" id="name" name="name" placeholder="ישראל ישראלי" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="email">כתובת אימייל</label>
-            <input type="email" id="email" name="email" placeholder="name@example.com" dir="ltr" required>
+<div class="container" id="mainContainer">
+    
+    <!-- שלב 1: טופס ההרשמה -->
+    <div id="formScreen">
+        <div class="logo-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-12-3v3m12-3v3M4.5 4.5h15a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 15.75v-9A2.25 2.25 0 014.5 4.5z" />
+            </svg>
         </div>
 
-        <button type="submit">אישור והרשמה לוובינר</button>
-    </form>
+        <h1>הצטרפו לוובינר המקצועי</h1>
+        <p class="subtitle">הבטיחו את מקומכם עכשיו וקבלו גישה לכלים המובילים ולתכנים המתקדמים ביותר בתחום.</p>
 
-    <div class="footer-text">
-        * קישור לוובינר יישלח לתיבת המייל בסמוך לאירוע
+        <form id="webinarForm">
+            <div class="form-group">
+                <label for="name">שם מלא</label>
+                <input type="text" id="name" name="name" placeholder="ישראל ישראלי" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">כתובת אימייל</label>
+                <input type="email" id="email" name="email" placeholder="name@example.com" dir="ltr" required>
+            </div>
+
+            <button type="submit" id="submitBtn">אישור והרשמה לוובינר</button>
+            <div class="error-message" id="errorMsg">אירעה שגיאה בחיבור. אנא נסה שנית.</div>
+        </form>
+
+        <div class="footer-text">
+            * קישור לוובינר יישלח לתיבת המייל בסמוך לאירוע
+        </div>
     </div>
+
+    <!-- שלב 2: הודעת הצלחה מובנית (מוסתרת כברירת מחדל) -->
+    <div id="successScreen" class="success-screen">
+        <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+        </div>
+        <h1>נרשמת בהצלחה!</h1>
+        <p class="subtitle" style="margin-bottom: 10px;">מקומך בוובינר נשמר בהצלחה והפרטים נקלטו במערכת.</p>
+        <p class="subtitle">הנחיות נוספות וקישור גישה יישלחו אליך ישירות לתיבת המייל.</p>
+    </div>
+
 </div>
 
 <script>
     const form = document.getElementById('webinarForm');
+    const formScreen = document.getElementById('formScreen');
+    const successScreen = document.getElementById('successScreen');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
+
     form.addEventListener('submit', e => {
         e.preventDefault();
         
-        // שינוי זמני של כפתור השליחה לחיווי ויזואלי
-        const btn = form.querySelector('button');
-        const originalText = btn.innerText;
-        btn.innerText = 'רושם אותך במערכת...';
-        btn.disabled = true;
+        // חיווי טעינה בכפתור
+        submitBtn.innerText = 'מבצע רישום...';
+        submitBtn.disabled = true;
+        errorMsg.style.display = 'none';
 
         fetch('https://script.google.com/macros/s/AKfycbzQ4_lUqIX7sIe_g1HV1jt3tSjj90iJ4gkPMSBDlFU18EAGvlIZbJuc0Gq4H1zPEJn0KA/exec', {
             method: 'POST',
             body: new FormData(form),
-            mode: 'no-cors' // מניעת שגיאות CORS מול גוגל סקריפט
+            mode: 'no-cors'
         }).then(() => {
-            alert('נרשמת בהצלחה! נתראה בוובינר.');
-            form.reset();
-            btn.innerText = originalText;
-            btn.disabled = false;
+            // החלפת המסכים בצורה חלקה
+            formScreen.style.display = 'none';
+            successScreen.style.display = 'block';
         }).catch(err => {
-            alert('אירעה שגיאה, אנא נסה שנית.');
-            btn.innerText = originalText;
-            btn.disabled = false;
+            // טיפול בשגיאה ללא אלרט
+            submitBtn.innerText = 'אישור והרשמה לוובינר';
+            submitBtn.disabled = false;
+            errorMsg.style.display = 'block';
         });
     });
 </script>
