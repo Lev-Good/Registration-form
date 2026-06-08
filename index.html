@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הרשמה לוובינר</title>
+</head>
+<body>
+    <h2>הרשמה לוובינר</h2>
+    <form id="webinarForm">
+        <input type="text" name="name" placeholder="שם מלא" required><br>
+        <input type="email" name="email" placeholder="אימייל" required><br>
+        <button type="submit">הירשם עכשיו</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('webinarForm');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            fetch('https://script.google.com/macros/s/AKfycbzQ4_lUqIX7sIe_g1HV1jt3tSjj90iJ4gkPMSBDlFU18EAGvlIZbJuc0Gq4H1zPEJn0KA/exec', {
+                method: 'POST',
+                body: new FormData(form)
+            }).then(() => alert('נרשמת בהצלחה!'));
+        });
+    </script>
+</body>
+</html>
